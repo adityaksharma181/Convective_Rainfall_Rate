@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<informationPackage xmlns="http://www.eumetsat.int/sip">
+    <dataSection>
+        <dataObject ID="MSG2-SEVI-MSG15-0100-NA-20250528201241.343000000Z-NA.nat">
+            <fileType>Data</fileType>
+            <format>Native</format>
+            <size>271175723</size>
+            <path>MSG2-SEVI-MSG15-0100-NA-20250528201241.343000000Z-NA.nat</path>
+        </dataObject>
+    </dataSection>
+    <eopmetadataSection>
+        <path>EOPMetadata.xml</path>
+    </eopmetadataSection>
+</informationPackage>
