@@ -322,34 +322,31 @@ if time_diff1 <30 and time_diff2 <30:
     TB = np.array([output_insat_data['IMG_MIR_TEMP']])
     R = np.array([output_imerg_data['precipitation']])
 
-    # Define the brightness temperature threshold (Kelvin)
+    # Define the brightness temperature
     Tc = 240 #ATBD mosdac
     #HEM model function to fit rainfall data
-def hem_model(inputs, a0, a1, a2, b0, b1, b2):
-    """
-    HEM rainfall estimation model:
-    R = a(TPW) * exp(-b(TPW) * (TB - Tc)) if TB < Tc, else 0
+    if TB<=240 :
+        def hem_model(inputs, a0, a1, a2, b0, b1, b2):
+            """
+            HEM rainfall estimation model:
+            R = a(TPW) * exp(-b(TPW) * (TB)) if TB < 240
 
-    Parameters:
-    - inputs: TPW and TB arrays
-    - a0, a1, a2: coefficients for quadratic function of a(TPW)
-    - b0, b1, b2: coefficients for quadratic function of b(TPW)
+            a0, a1, a2: coefficients for quadratic function of a(TPW)
+             b0, b1, b2: coefficients for quadratic function of b(TPW)
+            Estimated rainfall array corresponding to inputs
+            """
+            tpw, tb = inputs
 
-    Returns:
-    - Estimated rainfall array corresponding to inputs
-    """
-    tpw, tb = inputs
+            a = a0 + a1 * tpw + a2 * tpw**2
+            b = b0 + b1 * tpw + b2 * tpw**2
 
-    # Calculate empirical coefficient 'a' as quadratic function of TPW
-    a = a0 + a1 * tpw + a2 * tpw**2
+            # Apply model formula only where TB < 240, else rainfall = 0
+            rainfall_est = np.where(tb < 240, a * np.exp(-b)*tb, 0.0)
 
-    # Calculate empirical coefficient 'b' as quadratic function of TPW
-    b = b0 + b1 * tpw + b2 * tpw**2
+            return rainfall_est
+    else:
+        exit()
 
-    # Apply model formula only where TB < Tc, else rainfall = 0
-    rainfall_est = np.where(tb < Tc, a * np.exp(-b * (tb - Tc)), 0.0)
-
-    return rainfall_est
 
 # Pack TPW and TB as inputs to the model
 inputs = (TPW, TB)
