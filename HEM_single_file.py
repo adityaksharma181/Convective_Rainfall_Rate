@@ -23,7 +23,7 @@ from scipy.optimize import curve_fit
 from scipy.interpolate import RegularGridInterpolator
 
 #file directory
-noaa_files = 'C:/Users/adity/Downloads/Blended-Hydro_TPW_MAP_d20250528/BHP-TPW_v04r0_blend_s202505281159300_e202505282300000_c202505282357373.nc'
+noaa_files = 'C:/Users/adity/Downloads/Blended-Hydro_TPW_MAP_d20250528/BHP-TPW_v04r0_blend_s202505272303590_e202505281000000_c202505281057415.nc'
 imerg_files = 'C:/Users/adity/Desktop/Data_Set/GPM_IMERG_late_run/3B-HHR-L.MS.MRG.3IMERG.20250528-S000000-E002959.0000.V07B.HDF5'
 insat_files = 'C:/Users/adity/Desktop/Data_Set/INSAT_level1C/3RIMG_28MAY2025_0015_L1C_ASIA_MER_V01R00.h5'
 
