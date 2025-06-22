@@ -1,6 +1,6 @@
 follow the steps to get results
 
-For training I used file from 28th MAy and for validation i used 30th May file**
+_For training I used file from 28th MAy and for validation i used 30th May file_
 
 **Data Reprocessing**
 1. Use insat-resampling file to resample training data and save to external file
