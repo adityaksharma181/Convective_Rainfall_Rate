@@ -4,7 +4,7 @@ import numpy as np
 
 # Input and Output paths for file
 input_path = "3B-HHR-L.MS.MRG.3IMERG.20250528-S130000-E132959.0780.V07B.HDF5"  #  <------------------ File Path
-output_path = "output_precipitation_data.nc"         #  <------------------ File Path
+output_path = "gpm-imerg-resampled.nc"         #  <------------------ File Path
 
 # Spatial Boundary Condition
 lat_min, lat_max = -10.0, 45.5
