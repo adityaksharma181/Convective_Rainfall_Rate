@@ -6,6 +6,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import joblib
+import json
+
 
 # File Paths and extraction from each file
 insat = xr.open_dataset("insat_resampled.nc")  #  <---------------- File Paths
@@ -65,6 +68,22 @@ r2 = r2_score(y_test, y_pred)
 
 print(f"✅ RMSE: {rmse:.3f} mm/hr")
 print(f"✅ R² Score: {r2:.3f}")
+
+# Save the trained model
+model_path = "/kaggle/working/random_forest_model.pkl"
+joblib.dump(rf, model_path)
+print(f"✅ Model saved to: {model_path}")
+
+# === Save evaluation metrics ===
+metrics = {
+    "RMSE": float(rmse),
+    "R2_Score": float(r2)
+}
+metrics_path = "/kaggle/working/model_metrics.json"
+with open(metrics_path, "w") as f:
+    json.dump(metrics, f, indent=4)
+print(f"✅ Metrics saved to: {metrics_path}")
+
 
 # Removing the lat, lon from importance graph
 all_features = [
