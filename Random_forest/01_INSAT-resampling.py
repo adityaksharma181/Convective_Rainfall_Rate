@@ -1,4 +1,5 @@
 # INSAT files uses Metarcor projection which needs to be converted into Global Co-ordinate system along with resampling of required variables
+# USE CUSTOM PATH BEFORE ECECUTING THE FILE
 import h5py
 import numpy as np
 import xarray as xr
@@ -6,7 +7,7 @@ import pyproj
 from scipy.interpolate import griddata
 
 # INSAT-3DR level 1C file path
-insat_path = "Folder/3RIMG_28MAY2025_1315_L1C_ASIA_MER_V01R00.h5"
+insat_path = "Folder/3RIMG_28MAY2025_1315_L1C_ASIA_MER_V01R00.h5" #     <---------- File Path
 
 # Extraction of important variables
 with h5py.File(insat_path, "r") as insat_file:
@@ -85,5 +86,5 @@ insat_output = xr.Dataset(
 )
 # save and completion text
 print(insat_output)
-insat_output.to_netcdf("insat_resampled.nc")
+insat_output.to_netcdf("insat_resampled.nc")  #  <------------ File Path
 print("✅ INSAT processing complete.")
