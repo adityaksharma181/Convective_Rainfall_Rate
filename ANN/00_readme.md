@@ -2,6 +2,8 @@ follow the steps to get results
 
 For training I used file from 28th May and for validation i used 30th May file
 
+kaggle link: https://www.kaggle.com/code/aditxaks/ann-model-single-file-py
+
 Data Reprocessing
 
 Use insat-resampling file to resample training data and save to external file
