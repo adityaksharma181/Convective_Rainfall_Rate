@@ -1,0 +1,112 @@
+import os
+import numpy as np
+import xarray as xr
+import matplotlib.pyplot as plt
+import joblib
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from tensorflow.keras.models import load_model
+
+# Files path 
+INSAT_FILE = "/kaggle/input/nc-insat/3RIMG_30MAY2025_1015_L1C_ASIA_MER_V01R00.nc"
+IMERG_FILE = "/kaggle/input/nc-imerg/3B-HHR-L.MS.MRG.3IMERG.20250530-S100000-E102959.0600.V07B.nc"
+MODEL_PATH = "insat_imerg_ann_model_mse.h5"
+SCALER_PATH = "scaler.save"
+
+# Load model 
+model = load_model(MODEL_PATH)
+scaler = joblib.load(SCALER_PATH)
+
+# Extraction from files
+ds = xr.open_dataset(INSAT_FILE)
+imrg = xr.open_dataset(IMERG_FILE)
+
+# Time removal due to use of similar time stamp files
+if 'time' in ds.dims:
+    ds = ds.squeeze('time', drop=True)
+if 'time' in imrg.dims:
+    imrg = imrg.squeeze('time', drop=True)
+
+# Interpolate INSAT to IMERG grid
+ds_interp = ds.interp(lat=imrg['lat'], lon=imrg['lon'], method="linear")
+
+# Features for Model
+features = [
+    'IMG_TIR1_TB', 'IMG_TIR2_TB', 'IMG_WV_TB',
+    'TIR1_WV_TB_DIFFERENCE', 'TIR2_WV_TB_DIFFERENCE',
+    'TIR_TB_DIVISION', 'TIR_TB_DIFFERENCE'
+]
+
+X_full = np.stack([ds_interp[feat].values.flatten() for feat in features], axis=1)
+y_full = imrg['precipitation'].values.flatten()
+
+# Mask for valid data
+mask = np.isfinite(X_full).all(axis=1) & np.isfinite(y_full) & (y_full > 0)
+X_valid = X_full[mask]
+y_valid = y_full[mask]
+
+# Applying scaler
+X_scaled = scaler.transform(X_valid)
+
+# Predict
+y_pred = model.predict(X_scaled).flatten()
+
+# Evaluation 
+rmse = np.sqrt(mean_squared_error(y_valid, y_pred))
+mae = mean_absolute_error(y_valid, y_pred)
+
+# Bin-based weights and weighted average metrics
+rain_bins = np.digitize(y_valid, bins=[2, 5, 8])
+bin_weights = np.array([2, 4, 8.0, 20.0])
+sample_weights = bin_weights[rain_bins]
+sample_weights /= np.mean(sample_weights)
+
+weighted_mse = np.average((y_valid - y_pred)**2, weights=sample_weights)
+weighted_rmse = np.sqrt(weighted_mse)
+weighted_mae = np.average(np.abs(y_valid - y_pred), weights=sample_weights)
+
+# Results
+print("\n📊 Evaluation Results:")
+print(f"  RMSE: {rmse:.3f} mm/hr")
+print(f"  MAE:  {mae:.3f} mm/hr")
+print(f"  Weighted RMSE: {weighted_rmse:.3f} mm/hr")
+print(f"  Weighted MAE:  {weighted_mae:.3f} mm/hr")
+
+# Bin wise Evaluation
+bin_names = ["0-2", "2-5", "5-8", "8-inf"]
+print("\n📊 Evaluation by Rainfall Intensity Bin:")
+for i, label in enumerate(bin_names):
+    idx = np.where(rain_bins == i)[0]
+    if len(idx) == 0:
+        continue
+    rmse_i = np.sqrt(mean_squared_error(y_valid[idx], y_pred[idx]))
+    mae_i = mean_absolute_error(y_valid[idx], y_pred[idx])
+    print(f"  Range {label} mm/hr: RMSE = {rmse_i:.3f}, MAE = {mae_i:.3f}, Samples = {len(idx)}")
+
+# Plot true vs predicted
+y_pred_grid = np.full_like(y_full, np.nan)
+y_pred_grid[mask] = y_pred
+predicted_map = y_pred_grid.reshape(imrg['precipitation'].shape)
+
+# Plot Ground Truth and Prediction
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.imshow(imrg['precipitation'].values, origin='lower', cmap='viridis',
+           extent=[float(imrg['lon'].min()), float(imrg['lon'].max()),
+                   float(imrg['lat'].min()), float(imrg['lat'].max())])
+plt.colorbar(label='Precipitation (mm/hr)')
+plt.title("True IMERG Precipitation")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+
+plt.subplot(1, 2, 2)
+plt.imshow(predicted_map, origin='lower', cmap='viridis',
+           extent=[float(imrg['lon'].min()), float(imrg['lon'].max()),
+                   float(imrg['lat'].min()), float(imrg['lat'].max())])
+plt.colorbar(label='Predicted Rainfall (mm/hr)')
+plt.title("Predicted Precipitation")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+
+plt.tight_layout()
+plt.show()
