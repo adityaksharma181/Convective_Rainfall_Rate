@@ -1,6 +1,8 @@
 follow the steps to get results
 
-_For training I used file from 28th MAy and for validation i used 30th May file_
+_For training I used file from 28th May and for validation i used 30th May file_
+
+kaggle link: https://www.kaggle.com/code/aditxaks/rf-single-file-py
 
 **Data Reprocessing**
 1. Use insat-resampling file to resample training data and save to external file
@@ -13,3 +15,5 @@ _For training I used file from 28th MAy and for validation i used 30th May file_
 1. Use insat-resampling file to resample Validation data and save to external file
 2. Use imerg-resampling file to resample Validation data and save to external file
 3. Use validation resampled files to RF_validation file to validate
+
+
