@@ -57,7 +57,7 @@ for file_path in hdf_files:
     )
 
     # Subset data based on the desired lat/lon boundary box
-    output_imerg_subset = output_insat.sel(lat=slice(lat_min, lat_max), lon=slice(lon_min, lon_max))
+    output_imerg_subset = output_imerg.sel(lat=slice(lat_min, lat_max), lon=slice(lon_min, lon_max))
 
     # Add metadata / attributes for better understanding in the output NetCDF
     output_imerg_subset["precipitation"].attrs["units"] = "mm/hr"                  # Unit of precipitation
