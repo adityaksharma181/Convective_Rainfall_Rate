@@ -50,8 +50,7 @@ model = Sequential([                          # Initialize a Sequential model (l
 
 model.compile(
     optimizer=Adam(learning_rate=LEARNING_RATE),     # Compile model with Adam optimizer and a custom learning rate
-    loss=weighted_mse,                               # Use custom weighted mean squared error as loss
-    metrics=[tf.keras.metrics.RootMeanSquaredError(name='rmse')]  # Monitor RMSE during training
+    loss=weighted_mse]                               # Use custom weighted mean squared error as loss
 )
 model.summary()                                      # Print a summary of the model (layers and parameters)
 
