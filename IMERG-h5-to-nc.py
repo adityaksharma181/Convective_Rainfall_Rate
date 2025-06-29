@@ -1,4 +1,6 @@
-# Import required libraries
+'''
+    This code is designed to take .h5 format files from directory (to be out in code ) and convert each file to .nc format with only required variables that is precipitation, latitude and longitude.
+'''
 import h5py                    # For reading HDF5 files
 import xarray as xr            # For creating and manipulating labeled datasets 
 import numpy as np             # For numerical operations
@@ -44,7 +46,7 @@ for file_path in hdf_files:
     precip = precip.T
 
     # Create an xarray Dataset for easy NetCDF saving
-    output_insat = xr.Dataset(
+    output_imerg = xr.Dataset(
         {
             "precipitation": (["lat", "lon"], precip)     # Main variable with dimensions (lat, lon)
         },
@@ -55,16 +57,16 @@ for file_path in hdf_files:
     )
 
     # Subset data based on the desired lat/lon boundary box
-    output_insat_subset = output_insat.sel(lat=slice(lat_min, lat_max), lon=slice(lon_min, lon_max))
+    output_imerg_subset = output_insat.sel(lat=slice(lat_min, lat_max), lon=slice(lon_min, lon_max))
 
     # Add metadata / attributes for better understanding in the output NetCDF
-    output_insat_subset["precipitation"].attrs["units"] = "mm/hr"                  # Unit of precipitation
-    output_insat_subset["precipitation"].attrs["long_name"] = "IMERG Precipitation Rate"  # Description
-    output_insat_subset["lat"].attrs["units"] = "degrees_north"                    # Latitude unit
-    output_insat_subset["lon"].attrs["units"] = "degrees_east"                     # Longitude unit
+    output_imerg_subset["precipitation"].attrs["units"] = "mm/hr"                  # Unit of precipitation
+    output_imerg_subset["precipitation"].attrs["long_name"] = "IMERG Precipitation Rate"  # Description
+    output_imerg_subset["lat"].attrs["units"] = "degrees_north"                    # Latitude unit
+    output_imerg_subset["lon"].attrs["units"] = "degrees_east"                     # Longitude unit
 
     # Save the subset dataset to NetCDF format
-    output_insat_subset.to_netcdf(output_path)
+    output_imerg_subset.to_netcdf(output_path)
 
     # Print confirmation for each file processed
     print(f"Saved: {output_path}")
