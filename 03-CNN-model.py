@@ -1,3 +1,12 @@
+'''
+    This code is designed to train CNN model by taking BT variables, precipitation to predict rainfall
+    Flowchart of Code
+    1. Model save path
+    2. hyperparameters 
+    3. CNN model to take (lat, lon, channels) input
+    4. Train model on training dataset
+    5. Validate model
+'''
 import numpy as np                           # For numerical operations
 import matplotlib.pyplot as plt              # For plotting graphs
 from tensorflow.keras.models import Sequential      # For creating sequential CNN model
@@ -74,7 +83,6 @@ def eval_split(name, X_split, y_split):              # Define a function to eval
     y_pred_flat = model.predict(X_split)             # Use the model to predict target values (flattened)
     y_pred = y_pred_flat.reshape(y_split.shape)      # Reshape the prediction back to the original shape
     mse = mean_squared_error(y_split.flatten(), y_pred.flatten())  # Calculate Mean Squared Error between true and predicted
-    rmse = np.sqrt(mse)                              # Calculate Root Mean Squared Error
     print(f"{name} MSE: {mse:.4f}")  # Print MSE and RMSE for this split
 
 # Evaluate on all splits
