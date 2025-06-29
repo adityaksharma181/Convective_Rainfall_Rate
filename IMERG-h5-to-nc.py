@@ -1,5 +1,9 @@
 '''
-    This code is designed to take .h5 format files from directory (to be out in code ) and convert each file to .nc format with only required variables that is precipitation, latitude and longitude.
+  This code is designed to handle 'h5' format files to convert it into 'nc' format along with extraction of required variable
+  Flowchart of code
+  1. Input, output directories and spatial boundary condition
+  2. Extraction of variables using loop
+  3. Save to 'nc' format files
 '''
 import h5py                    # For reading HDF5 files
 import xarray as xr            # For creating and manipulating labeled datasets 
