@@ -1,7 +1,8 @@
 '''
   This code is designed to plot true rain and predicted rainfall
   Flowchat of code
-  1.
+  1. plot true rainfall
+  2. plot predicted rainfall
 '''
 import numpy as np               # For numerical operations like array manipulation
 import matplotlib.pyplot as plt  # For plotting and visualization
