@@ -13,6 +13,11 @@ import xarray as xr                          # For working with multi-dimensiona
 bt_sum = None                                # Initialize BT (Brightness Temperature) sum array as None
 count = 0                                    # Initialize file counter
 
+# Load INSAT file paths
+insat_folder = "/kaggle/input/nc-insat"        # Path to folder containing INSAT NetCDF files
+insat_files = [(file, None) for file in sorted(glob(os.path.join(insat_folder, "*.nc")))]   # Load all .nc files into a list of tuples (file, None)
+
+
 # Loop over each INSAT file
 for file, _ in insat_files:                  # 'insat_files' is assumed to be a list of (file, something) tuples
     ds = xr.open_dataset(file).sel(          # Open each NetCDF dataset file and select clipped latitude/longitude range
