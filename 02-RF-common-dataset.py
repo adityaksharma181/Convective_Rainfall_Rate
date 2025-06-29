@@ -19,8 +19,8 @@ from sklearn.preprocessing import MinMaxScaler  # For scaling/normalizing data
 from concurrent.futures import ProcessPoolExecutor, as_completed  # For parallel processing
 
 # Define directories where INSAT and IMERG NetCDF files are stored
-INSAT_DIR = "/kaggle/input/nc-insat"  # <------ Change dir accordingly
-IMERG_DIR = "/kaggle/input/nc-imerg"   # <------ Change dir accordingly
+INSAT_DIR = "/kaggle/working/"  # <------ Change dir accordingly
+IMERG_DIR = "/kaggle/working/"   # <------ Change dir accordingly
 
 # Define clipping boundary for India region (in latitudes and longitudes)
 lat_min_clip, lat_max_clip = 8.07, 37.1
