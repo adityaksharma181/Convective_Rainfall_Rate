@@ -6,6 +6,7 @@
     3. CNN model to take (lat, lon, channels) input
     4. Train model on training dataset
     5. Validate model
+    6. Plot loss curve
 '''
 import numpy as np                           # For numerical operations
 import matplotlib.pyplot as plt              # For plotting graphs
