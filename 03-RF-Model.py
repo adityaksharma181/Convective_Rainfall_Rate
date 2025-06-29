@@ -2,6 +2,9 @@
   This code is designed to create Random Forest Regression model, which is trained on 70% of datset and remaining 30 % is divided equally into testing and validation
   Flowchart of code
   1. Create Random Forest
+  2. Function  to train model
+  3.Validation of model
+  4. Plot importance feature
 '''
 from sklearn.ensemble import RandomForestRegressor  # Random Forest model for regression tasks
 from sklearn.metrics import mean_squared_error, r2_score  # Metrics to evaluate model performance
