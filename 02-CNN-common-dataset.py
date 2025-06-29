@@ -10,22 +10,15 @@
   6. Create common dataset
   7. Function for custom weights
 '''
-# Import necessary libraries for file operations, regex, and datetime handling
+
 import os
 import re
 from glob import glob
 from datetime import datetime
-
-# Numerical and scientific computing libraries
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
 import warnings
-
-# Ignore warnings to keep output clean
-warnings.filterwarnings("ignore")
-
-# Import TensorFlow and Keras for building the CNN model
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import (
@@ -36,6 +29,9 @@ from tensorflow.keras.layers import (
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+
+# Ignore warnings to keep output clean
+warnings.filterwarnings("ignore")
 
 # Define input data directories
 INSAT_DIR = "/kaggle/input/nc-insat"  # Directory where INSAT satellite data (NetCDF files) are stored
