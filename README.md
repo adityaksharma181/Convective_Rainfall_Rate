@@ -12,5 +12,5 @@ ANN Model :
 SVM Mddel :
 
 Link for
-conference paper format : https://www.overleaf.com/read/hxzwxkgfvmrt#ac4bc5
+conference paper format : https://www.overleaf.com/7449285893hzsrypyyvffv#322944
 Project Report : https://curajinstitute-my.sharepoint.com/:w:/g/personal/2020imsph003_curaj_ac_in/Ea5QIB5PV0ZJp_QYMslVQ2YBndyi5ZHdEpCJfdTjbNt_mw?e=4c0dck
