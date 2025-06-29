@@ -30,7 +30,7 @@ def evaluate(X, y, title):
     r2 = r2_score(y, y_pred)
 
     # Print the evaluation results (RMSE and R² score)
-    print(f"{title} - MSE: {rmse:.3f} | R²: {r2:.3f}")
+    print(f"{title} - MSE: {mse:.3f} | R²: {r2:.3f}")
 
 # Evaluate model performance on Train, Validation, and Test datasets
 train_mse = evaluate(X_train, y_train, "Train")  # Evaluate on Training data
