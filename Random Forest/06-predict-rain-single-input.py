@@ -35,7 +35,7 @@ def predict_rainfall_from_insat(insat_path):
             insat_ds = insat_ds.rename({'latitude': 'lat', 'longitude': 'lon'})  # Rename coordinates if needed
 
         if not {'lat', 'lon'}.issubset(insat_ds.coords):  # Check if lat/lon are present
-            print(f"❌ Missing lat/lon in {insat_path}")  # Print error if missing
+            print(f" Missing lat/lon in {insat_path}")  # Print error if missing
             return  # Exit function
 
         lat_grid = insat_ds['lat'].values  # Get latitude values
@@ -103,7 +103,7 @@ def predict_rainfall_from_insat(insat_path):
         plt.show()  # Display the plot
 
     except Exception as e:  # Catch any errors during processing
-        print(f"❌ Error processing {insat_path}: {e}")  # Print error message
+        print(f" Error processing {insat_path}: {e}")  # Print error message
  
 # Change path below to your external INSAT file
 example_insat_path = "/kaggle/input/nc-insat/3RIMG_28MAY2025_0115_L1C_ASIA_MER_V01R00.nc"  # Example INSAT file path
