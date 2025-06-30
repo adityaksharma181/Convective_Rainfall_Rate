@@ -187,7 +187,7 @@ with ProcessPoolExecutor(max_workers=8) as executor:
 
 # If no valid data found after processing, stop the program
 if len(X_list) == 0 or len(y_list) == 0:
-    print("❌ No valid data after spatial clipping.")
+    print("No valid data after spatial clipping.")
     exit()
 
 # Combine all feature arrays vertically (stack all samples)
@@ -198,7 +198,7 @@ y_all = np.hstack(y_list)
 grid_indices_all = np.vstack(grid_list)
 
 # Print final dataset shape (features, target, grid positions)
-print(f"✅ Final dataset shape: X = {X_all.shape}, y = {y_all.shape}, grid_indices = {grid_indices_all.shape}")
+print(f"Final dataset shape: X = {X_all.shape}, y = {y_all.shape}, grid_indices = {grid_indices_all.shape}")
 
 # Normalize feature values using Min-Max scaling (0-1 range)
 scaler = MinMaxScaler()
@@ -215,4 +215,4 @@ X_val, X_test, y_val, y_test, grid_val, grid_test = train_test_split(
 )
 
 # Print final split sizes
-print(f"✅ Split: Train={X_train.shape}, Val={X_val.shape}, Test={X_test.shape}")
+print(f" Split: Train={X_train.shape}, Val={X_val.shape}, Test={X_test.shape}")
