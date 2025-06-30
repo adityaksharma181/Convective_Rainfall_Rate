@@ -1,60 +1,70 @@
+# Plot true vs predicted
 '''
   This code is designed to plot true rain and predicted rainfall
   Flowchat of code
-  1. plot true rainfall
-  2. plot predicted rainfall
+  1.
 '''
-import numpy as np               # For numerical operations like array manipulation
-import matplotlib.pyplot as plt  # For plotting and visualization
+import numpy as np  # Import NumPy for numerical operations
+import matplotlib.pyplot as plt  # Import Matplotlib for plotting
+import cartopy.crs as ccrs  # Import Cartopy coordinate reference systems
+import cartopy.feature as cfeature  # Import Cartopy map features
 
-# Visualize a sample prediction from the model
-sample_idx = 0  # Select the index of the sample to visualize ( the first sample in the test set)
+# Select sample index for visualization
+sample_idx = 0  # Choose the first sample to visualize
 
-# Get the true precipitation grid (ground truth) for the selected sample from the test labels (y_test)
-true_grid = y_test[sample_idx]  
+# Replace NaNs in target (ground truth) data with 0.0
+y_test = np.nan_to_num(y_test, nan=0.0)  # Fill NaNs in ground truth data with 0.0
 
-# Predict the precipitation grid for the selected sample using the trained model
-# X_test[sample_idx:sample_idx+1] selects one sample from the test features
-# .predict() generates the model's predicted output for that sample
-# .reshape(true_grid.shape) reshapes the prediction to match the shape of the true grid for easy comparison
-pred_grid = model.predict(X_test[sample_idx:sample_idx+1]).reshape(true_grid.shape)  
+# Get true precipitation grid for the sample
+true_grid = y_test[sample_idx]  # Extract the true precipitation grid for selected sample
 
+# Predict precipitation grid using the trained model
+pred_grid = model.predict(X_test[sample_idx:sample_idx+1]).reshape(true_grid.shape)  # Get model prediction and reshape to match true grid
 
-# Plot the True Precipitation Grid
-plt.figure(figsize=(8,6))  
+# Replace any NaNs in prediction with 0.0
+pred_grid = np.nan_to_num(pred_grid, nan=0.0)  # Fill NaNs in prediction with 0.0
 
-# Create a new figure with specified size (8 inches wide by 6 inches tall)
-plt.imshow(
-    true_grid,                 # The 2D true precipitation data to display
-    origin='lower',            # Place the origin (0,0) of the grid at the bottom left corner
-    cmap='viridis',            # Use the 'viridis' color map for coloring values
-    # Define the extent (coordinates range) of the plot: x-axis (longitude) and y-axis (latitude)
-    extent=[lon_min_clip, lon_max_clip, lat_min_clip, lat_max_clip]  
-)
+# Mask zero and negative precipitation values
+masked_true_grid = np.ma.masked_where(true_grid <= 0, true_grid)  # Mask true grid values ≤ 0
+masked_pred_grid = np.ma.masked_where(pred_grid <= 0, pred_grid)  # Mask predicted grid values ≤ 0
 
-# Set the title of the plot 
-plt.title('True Precipitation')  
+# Color scale limits (ignoring masked values)
+vmin = min(masked_true_grid.min(), masked_pred_grid.min())  # Minimum value for color scale
+vmax = max(masked_true_grid.max(), masked_pred_grid.max())  # Maximum value for color scale
 
-# Add a colorbar to show the scale (precipitation intensity in millimeters per hour)
-plt.colorbar(label='mm/hr')  
+# Custom colormap (white for masked areas)
+cmap = plt.cm.viridis.copy()  # Copy the viridis colormap
+cmap.set_bad(color='white')  # Set color for masked (bad) data to white
 
-# Display the plot on the screen
-plt.show()  
+# Plotting with Cartopy projections
+fig, axes = plt.subplots(1, 2, figsize=(14, 6), subplot_kw={'projection': ccrs.PlateCarree()})  # Create 2 side-by-side map plots
 
-# Plot the Predicted Precipitation Grid
-plt.figure(figsize=(8,6))  
-# Create another new figure with the same size for the predicted data plot
+for ax, grid, title in zip(
+    axes,
+    [masked_true_grid, masked_pred_grid],  # Data grids to plot
+    ['True Precipitation (Masked ≤ 0 mm/hr)', 'Predicted Precipitation (Masked ≤ 0 mm/hr)']  # Titles for plots
+):
+    # Plot precipitation grid
+    im = ax.imshow(
+        grid,  # Data to display
+        origin='lower',  # Set image origin to lower left
+        cmap=cmap,  # Use custom colormap
+        extent=[lon_min_clip, lon_max_clip, lat_min_clip, lat_max_clip],  # Geographic extent of the plot
+        vmin=vmin,  # Minimum color scale value
+        vmax=vmax,  # Maximum color scale value
+        transform=ccrs.PlateCarree()  # Map projection transform
+    )
 
-plt.imshow(
-    pred_grid,                 # The 2D predicted precipitation data from the model
-    origin='lower',            # Again, put the origin at the bottom left for consistency
-    cmap='viridis',            # Use the same colormap for consistency in color scaling
-    # Use the same geographic extent as the true grid for direct visual comparison
-    extent=[lon_min_clip, lon_max_clip, lat_min_clip, lat_max_clip]  
-)
+    # Add coastlines and optional land/ocean features
+    ax.coastlines(resolution='10m', color='black', linewidth=1)  # Draw coastlines
 
-# Title showing model's predicted precipitation output
-plt.title('Predicted Precipitation (Weighted CNN)')  
-plt.colorbar(label='mm/hr')  
-plt.show()  
+    # Optional: Add borders or land features for better context
+    ax.add_feature(cfeature.LAND, facecolor='lightgray')  # Add land with light gray color
 
+    ax.set_title(title)  # Set title for each subplot
+
+    # Add colorbar for each plot
+    fig.colorbar(im, ax=ax, orientation='vertical', label='mm/hr')  # Add vertical colorbar with label
+
+plt.tight_layout()  # Adjust layout to avoid overlap
+plt.show()  # Display the plots
