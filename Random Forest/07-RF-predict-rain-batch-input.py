@@ -123,7 +123,7 @@ def predict_for_folder(insat_folder):  # Function to predict rainfall for all fi
 
     # Print mean over entire area (single number)
     mean_value = np.nanmean(mean_precip)  # Calculate overall mean rainfall
-    print(f"✅ Overall Mean Predicted Precipitation (mm/hr): {mean_value:.4f}")  # Print mean rainfall
+    print(f" Overall Mean Predicted Precipitation (mm/hr): {mean_value:.4f}")  # Print mean rainfall
 
 # Replace this with your folder path
 example_insat_folder = "/kaggle/input/nc-insat"  # Path to folder containing INSAT files
