@@ -100,9 +100,9 @@ history = model.fit(
 )
 
 # Save the trained model and the scaler for future use
-#model.save(MODEL_SAVE_PATH)  # Save the trained model to the given path
-#joblib.dump(scaler, "scaler_improved.save")  # Save the scaler used during data preprocessing
-#print(f"Model and scaler saved successfully to: {MODEL_SAVE_PATH}")
+model.save(MODEL_SAVE_PATH)  # Save the trained model to the given path
+joblib.dump(scaler, "scaler_improved.save")  # Save the scaler used during data preprocessing
+print(f"Model and scaler saved successfully to: {MODEL_SAVE_PATH}")
 
 # Plot training history (Loss and Metrics over epochs)
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 10))  # Create a 2x2 grid for plots
