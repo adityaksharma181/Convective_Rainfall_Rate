@@ -56,3 +56,11 @@ plt.ylabel("Importance")  # Y-axis label
 plt.grid(True)  # Add grid lines for better readability
 plt.tight_layout()  # Adjust layout
 plt.show()  # Display the plot
+
+import joblib  # For saving and loading the trained model
+# Save the trained Random Forest model and scaler
+joblib.dump(rf, "random_forest_rainfall_model.joblib")
+print("Random Forest model saved as 'random_forest_rainfall_model.joblib'")
+
+joblib.dump(scaler, "scaler.joblib")
+print("Scaler saved as 'scaler.joblib'")
