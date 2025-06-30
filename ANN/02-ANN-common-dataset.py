@@ -9,6 +9,7 @@
   5. normalise vall extracted variables using minmax ( linear scaling )
   6. Create common dataset
 '''
+# common dataset
 import os                               # For file and directory operations
 import re                               # For parsing filenames using regular expressions
 from glob import glob                   # For file pattern matching
@@ -72,32 +73,13 @@ def create_additional_features(insat_ds):
     tir1_wv = tir1 - wv
     tir2_wv = tir2 - wv
     
-    # Additional advanced features
-    tir_avg = (tir1 + tir2) / 2
-    tir_ratio = tir1 / (tir2 + 1e-6)  # Avoid division by zero
-    temp_gradient = np.abs(tir1 - tir2)
-    cold_cloud_indicator = (tir1 < 220) & (tir2 < 220)  # Binary indicator for cold clouds
-    wv_tir_interaction = wv * tir_avg
-    
-    # Simple texture feature: spatial gradient of TIR1
-    tir1_grad_x = np.gradient(tir1.values, axis=1)
-    tir1_grad_y = np.gradient(tir1.values, axis=0)
-    spatial_texture = np.sqrt(tir1_grad_x**2 + tir1_grad_y**2)  # Magnitude of gradient
-    
     # Return all features as xarray Dataset
     features = xr.Dataset({
         'WV': wv,
         'TIR1': tir1,
         'TIR2': tir2,
         'TIR1_WV': tir1_wv,
-        'TIR2_WV': tir2_wv,
-        'TIR_AVG': tir_avg,
-        'TIR_RATIO': tir_ratio,
-        'TEMP_GRADIENT': temp_gradient,
-        'COLD_CLOUD': cold_cloud_indicator.astype(float),
-        'WV_TIR_INTERACTION': wv_tir_interaction,
-        'SPATIAL_TEXTURE': (['lat', 'lon'], spatial_texture)
-    })
+        'TIR2_WV': tir2_wv })
     
     return features
 
@@ -139,9 +121,7 @@ def process_pair(insat_path, insat_time, imerg_files):
         )
 
         # Select feature names to use
-        feature_names = ['WV', 'TIR1', 'TIR2', 'TIR1_WV', 'TIR2_WV', 
-                        'TIR_AVG', 'TIR_RATIO', 'TEMP_GRADIENT', 
-                        'COLD_CLOUD', 'WV_TIR_INTERACTION', 'SPATIAL_TEXTURE']
+        feature_names = ['WV', 'TIR1', 'TIR2', 'TIR1_WV', 'TIR2_WV']
         
         # Flatten feature grids into vectors for ML
         X = np.stack([
@@ -218,14 +198,25 @@ print(f"Final dataset shape: X = {X.shape}, y = {y.shape}")
 # Store last processed INSAT and IMERG grid (for later full-grid predictions)
 ds_interp = ds_interp_list[-1]
 imrg = imrg_list[-1]
-feature_names = ['WV', 'TIR1', 'TIR2', 'TIR1_WV', 'TIR2_WV', 
-                'TIR_AVG', 'TIR_RATIO', 'TEMP_GRADIENT', 
-                'COLD_CLOUD', 'WV_TIR_INTERACTION', 'SPATIAL_TEXTURE']
+feature_names = ['WV', 'TIR1', 'TIR2', 'TIR1_WV', 'TIR2_WV']
 
 # Filter out any outliers in target rainfall data
 mask = (y >= 0) & (y <= 50)  # Only keep targets within 0-50 mm/hr
 X = X[mask]
 y = y[mask]
+
+print(f"  0 mm/hr: {np.sum(y == 0)} samples ({100*np.sum(y == 0)/len(y):.1f}%)")
+print(f"  0-5 mm/hr: {np.sum((y > 0) & (y <= 5))} samples ({100*np.sum((y > 0) & (y <= 5))/len(y):.1f}%)")
+print(f"  5-15 mm/hr: {np.sum((y > 5) & (y <= 15))} samples ({100*np.sum((y > 5) & (y <= 15))/len(y):.1f}%)")
+print(f"  15-30 mm/hr: {np.sum((y > 15) & (y <= 30))} samples ({100*np.sum((y > 15) & (y <= 30))/len(y):.1f}%)")
+print(f"  >30 mm/hr: {np.sum(y > 30)} samples ({100*np.sum(y > 30)/len(y):.1f}%)")
+print(f"Rainfall mean: {y.mean():.4f}, max: {y.max():.4f}")
+print(f"------------------------------------------------------\n")
+
+# ✅ NEW STEP: Mask out 0 mm/hr precipitation samples
+non_zero_mask = y > 0
+X = X[non_zero_mask]
+y = y[non_zero_mask]
 
 # Create sample weights to balance class imbalance (very low rainfall dominates data)
 def create_sample_weights(y_values):
@@ -273,4 +264,6 @@ X_test, X_val, y_test, y_val, sw_test, sw_val = train_test_split(
 )
 
 input_shape = X_train.shape[1]
-print(f"Input shape: {input_shape}, Train: {X_train.shape[0]}, Test: {X_test.shape[0]}")
+print(f"After removing 0 mm/hr samples:")
+print(f"Input shape: {input_shape}, Train: {X_train.shape[0]}, Test: {X_test.shape[0]}, Validation input shape: {X_val.shape[0]}")
+
