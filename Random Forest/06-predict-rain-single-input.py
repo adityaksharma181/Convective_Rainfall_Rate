@@ -80,6 +80,9 @@ def predict_rainfall_from_insat(insat_path):
         X_valid_scaled = scaler.transform(X_valid)  # Apply scaling to valid features
         y_pred = rf.predict(X_valid_scaled)  # Predict rainfall using Random Forest model
 
+        # Mask 0 mm/hr predictions by setting them to NaN
+        y_pred[y_pred == 0] = np.nan
+
         # Fill predictions back into grid
         pred_grid_flat = np.full(X_new.shape[0], np.nan)  # Initialize flat array with NaNs
         pred_grid_flat[valid_mask] = y_pred  # Fill predicted values at valid positions
@@ -106,6 +109,6 @@ def predict_rainfall_from_insat(insat_path):
         print(f" Error processing {insat_path}: {e}")  # Print error message
  
 # Change path below to your external INSAT file
-example_insat_path = "/kaggle/input/nc-insat/3RIMG_28MAY2025_0115_L1C_ASIA_MER_V01R00.nc"  # Example INSAT file path
+example_insat_path = "/kaggle/input/nc-insat/3RIMG_28MAY2025_0315_L1C_ASIA_MER_V01R00.nc"  # Example INSAT file path
 
 predict_rainfall_from_insat(example_insat_path)  # Call function with example file
