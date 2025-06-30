@@ -102,7 +102,7 @@ y_pred_val = model.predict(X_val).flatten()
 val_mse = mean_squared_error(y_val, y_pred_val)
 
 # Print MSE values for training, validation, and test sets
-print("\n📈 Overall MSE Metrics:")
-print(f"✅ Training MSE: {train_mse:.4f}")
-print(f"✅ Validation MSE: {val_mse:.4f}")
-print(f"✅ Test MSE: {test_mse:.4f}")
+print("\nOverall MSE Metrics:")
+print(f"Training MSE: {train_mse:.4f}")
+print(f"Validation MSE: {val_mse:.4f}")
+print(f" Test MSE: {test_mse:.4f}")
