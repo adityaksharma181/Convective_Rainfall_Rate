@@ -155,7 +155,7 @@ def process_pair(insat_path, insat_time, imerg_files):
 
     except Exception as e:
         # Handle any unexpected error
-        print(f"❌ Error processing {os.path.basename(insat_path)}: {e}")
+        print(f" Error processing {os.path.basename(insat_path)}: {e}")
         return None
 
 # Get sorted list of INSAT files with their timestamps
