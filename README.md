@@ -5,7 +5,13 @@ NOTE : CHANGE THE DIRECTORIES IN 00, O1, 02 FOR ALL MODELS<br/>
        CHANGE THE DIRECTORIES IN 04, O5 FOR RANDOM FOREST<br/>
        CHANGE THE DIRECTORIES IN 03 FOR ANN MODEL<br/><br/><br/>
 
-Links to varify the sample model<br/>
+July trained model:<br/>
+RF: https://www.kaggle.com/code/aditxaks/rf-complete-july-py <br/>
+CNN: https://www.kaggle.com/code/aditxakss/cnn-complete-july-py <br/>
+ANN: https://www.kaggle.com/code/aditxakss/ann-complete-july-py <br/>
+
+
+<br/>Links to varify the sample model<br/>
 Random Forest : https://www.kaggle.com/code/aditxaks/rf-complete-py<br/>
 CNN Model : https://www.kaggle.com/code/aditxaks/cnn-complete-py<br/>
 ANN Model : https://www.kaggle.com/code/aditxaks/ann-complete-py <br/>
